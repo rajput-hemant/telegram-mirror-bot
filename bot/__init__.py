@@ -112,6 +112,7 @@ AUTHORIZED_CHATS = set()
 SUDO_USERS = set()
 AS_DOC_USERS = set()
 AS_MEDIA_USERS = set()
+AUTO_DUMP_CHAT = set()
 EXTENTION_FILTER = set(['.torrent'])
 
 if ospath.exists('authorized_chats.txt'):
@@ -355,6 +356,22 @@ try:
 except:
     BUTTON_SIX_NAME = None
     BUTTON_SIX_URL = None
+try:
+    DUMP_CHAT_ID = getConfig('DUMP_CHAT_ID')
+    if len(DUMP_CHAT_ID) == 0:
+        raise KeyError
+    else:
+        DUMP_CHAT_ID = int(DUMP_CHAT_ID)
+except KeyError:
+    DUMP_CHAT_ID = None
+try:
+    dumps = getConfig('AUTO_DUMP_CHAT')
+    dumps = dumps.split(" ")
+    for chats in dumps:
+        AUTO_DUMP_CHAT.add(int(chats))
+except:
+    logging.warning('Dump chats not provided')
+    pass
 try:
     IMAGE_URL = getConfig('IMAGE_URL')
     if len(IMAGE_URL) == 0:

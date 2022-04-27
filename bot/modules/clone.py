@@ -5,11 +5,11 @@ from threading import Thread
 from time import sleep
 
 from bot.helper.mirror_utils.upload_utils.gdriveTools import GoogleDriveHelper
-from bot.helper.telegram_helper.message_utils import sendMessage, sendMarkup, deleteMessage, delete_all_messages, update_all_messages, sendStatusMessage
+from bot.helper.telegram_helper.message_utils import sendDump ,sendMessage, sendMarkup, deleteMessage, delete_all_messages, update_all_messages, sendStatusMessage
 from bot.helper.telegram_helper.filters import CustomFilters
 from bot.helper.telegram_helper.bot_commands import BotCommands
 from bot.helper.mirror_utils.status_utils.clone_status import CloneStatus
-from bot import dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
+from bot import DUMP_CHAT_ID, dispatcher, LOGGER, CLONE_LIMIT, STOP_DUPLICATE, download_dict, download_dict_lock, Interval
 from bot.helper.ext_utils.bot_utils import get_readable_file_size, is_gdrive_link, is_gdtot_link, new_thread
 from bot.helper.mirror_utils.download_utils.direct_link_generator import gdtot
 from bot.helper.ext_utils.exceptions import DirectDownloadLinkException
@@ -34,8 +34,7 @@ def _clone(message, bot, multi=0):
         if reply_to.from_user.username:
             tag = f"@{reply_to.from_user.username}"
         else:
-            tag = reply_to.from_user.mention_html(
-                reply_to.from_user.first_name)
+            tag = reply_to.from_user.mention_html(reply_to.from_user.first_name)
     is_gdtot = is_gdtot_link(link)
     if is_gdtot:
         try:
@@ -46,8 +45,10 @@ def _clone(message, bot, multi=0):
             deleteMessage(bot, msg)
             return sendMessage(str(e), bot, message)
     if is_gdrive_link(link):
+        msg = sendMessage(f"Processing: <code>{link}</code>", bot, message)
         gd = GoogleDriveHelper()
         res, size, name, files = gd.helper(link)
+        deleteMessage(bot, msg)
         if res != "":
             return sendMessage(res, bot, message)
         if STOP_DUPLICATE:
@@ -63,8 +64,7 @@ def _clone(message, bot, multi=0):
                 return sendMessage(msg2, bot, message)
         if multi > 1:
             sleep(2)
-            nextmsg = type('nextmsg', (object, ), {
-                           'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
+            nextmsg = type('nextmsg', (object, ), {'chat_id': message.chat_id, 'message_id': message.reply_to_message.message_id + 1})
             nextmsg = sendMessage(args[0], bot, nextmsg)
             nextmsg.from_user.id = message.from_user.id
             multi -= 1
@@ -99,19 +99,16 @@ def _clone(message, bot, multi=0):
             sendMessage(f"{tag} {result}", bot, message)
         else:
             sendMarkup(result + cc, bot, message, button)
+            sendDump(DUMP_CHAT_ID, result + cc, bot, message, button)
         if is_gdtot:
             gd.deletefile(link)
         LOGGER.info(f"Cloning Done: {name}")
     else:
-        sendMessage(
-            'Send Gdrive or gdtot link along with command or by replying to the link by command', bot, message)
-
+        sendMessage('Send Gdrive or gdtot link along with command or by replying to the link by command', bot, message)
 
 @new_thread
 def cloneNode(update, context):
     _clone(update.message, context.bot)
 
-
-clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode,
-                               filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
+clone_handler = CommandHandler(BotCommands.CloneCommand, cloneNode, filters=CustomFilters.authorized_chat | CustomFilters.authorized_user, run_async=True)
 dispatcher.add_handler(clone_handler)
