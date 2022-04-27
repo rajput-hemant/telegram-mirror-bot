@@ -42,7 +42,7 @@ class TgUploader:
             for file_ in sorted(files):
                 if self.__is_cancelled:
                     return
-                if file_.endswith(tuple(EXTENTION_FILTER)):
+                if file_.lower().endswith(tuple(EXTENTION_FILTER)):
                     continue
                 up_path = ospath.join(dirpath, file_)
                 fsize = ospath.getsize(up_path)
@@ -63,7 +63,7 @@ class TgUploader:
 
     def __upload_file(self, up_path, file_, dirpath):
         if CUSTOM_FILENAME is not None:
-            cap_mono = f"{CUSTOM_FILENAME} <code>{file_}</code>"
+            cap_mono = f"<code>{CUSTOM_FILENAME} {file_}</code>"
             file_ = f"{CUSTOM_FILENAME} {file_}"
             new_path = ospath.join(dirpath, file_)
             osrename(up_path, new_path)

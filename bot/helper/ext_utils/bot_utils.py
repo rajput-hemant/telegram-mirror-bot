@@ -33,6 +33,7 @@ class MirrorStatus:
     STATUS_CHECKING = "CheckingUp...📝"
     STATUS_SEEDING = "Seeding...🌧"
 
+
 SIZE_UNITS = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
 
 
@@ -53,6 +54,7 @@ class setInterval:
     def cancel(self):
         self.stopEvent.set()
 
+
 def get_readable_file_size(size_in_bytes) -> str:
     if size_in_bytes is None:
         return '0B'
@@ -64,6 +66,7 @@ def get_readable_file_size(size_in_bytes) -> str:
         return f'{round(size_in_bytes, 2)}{SIZE_UNITS[index]}'
     except IndexError:
         return 'File too large'
+
 
 def getDownloadByGid(gid):
     with download_dict_lock:
@@ -80,6 +83,7 @@ def getDownloadByGid(gid):
             ):
                 return dl
     return None
+
 
 def getAllDownload(req_status: str):
     with download_dict_lock:
@@ -100,16 +104,18 @@ def getAllDownload(req_status: str):
                     return dl
     return None
 
+
 def get_progress_bar_string(status):
     completed = status.processed_bytes() / 8
     total = status.size_raw() / 8
     p = 0 if total == 0 else round(completed * 100 / total)
     p = min(max(p, 0), 100)
     cFull = p // 8
-    p_str = '■' * cFull
+    p_str = '●' * cFull
     p_str += '□' * (12 - cFull)
     p_str = f"[{p_str}]"
     return p_str
+
 
 def get_readable_message():
     with download_dict_lock:
@@ -187,6 +193,7 @@ def get_readable_message():
             return msg + bmsg, button
         return msg + bmsg, ""
 
+
 def turn(data):
     try:
         with download_dict_lock:
@@ -209,6 +216,7 @@ def turn(data):
     except:
         return False
 
+
 def get_readable_time(seconds: int) -> str:
     result = ''
     (days, remainder) = divmod(seconds, 86400)
@@ -227,23 +235,29 @@ def get_readable_time(seconds: int) -> str:
     result += f'{seconds}s'
     return result
 
+
 def is_url(url: str):
     url = findall(URL_REGEX, url)
     return bool(url)
 
+
 def is_gdrive_link(url: str):
     return "drive.google.com" in url
+
 
 def is_gdtot_link(url: str):
     url = match(r'https?://.+\.gdtot\.\S+', url)
     return bool(url)
 
+
 def is_mega_link(url: str):
     return "mega.nz" in url or "mega.co.nz" in url
+
 
 def is_magnet(url: str):
     magnet = findall(MAGNET_REGEX, url)
     return bool(magnet)
+
 
 def new_thread(fn):
     """To use as decorator to make a function call threaded.
@@ -257,9 +271,11 @@ def new_thread(fn):
 
     return wrapper
 
+
 def get_content_type(link: str) -> str:
     try:
-        res = rhead(link, allow_redirects=True, timeout=5, headers = {'user-agent': 'Wget/1.12'})
+        res = rhead(link, allow_redirects=True, timeout=5,
+                    headers={'user-agent': 'Wget/1.12'})
         content_type = res.headers.get('content-type')
     except:
         try:
@@ -269,4 +285,3 @@ def get_content_type(link: str) -> str:
         except:
             content_type = None
     return content_type
-

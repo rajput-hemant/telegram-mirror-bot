@@ -6,6 +6,7 @@ from os import makedirs, path as ospath, listdir
 from requests.utils import quote as rquote
 from io import FileIO
 from re import search as re_search
+from urllib.parse import parse_qs, urlparse
 from random import randrange
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -95,11 +96,14 @@ class GoogleDriveHelper:
 
     @staticmethod
     def __getIdFromUrl(link: str):
-        regex = r"https:\/\/drive\.google\.com\/(?:open(.*?)id\=|drive(.*?)\/folders\/|file(.*?)?\/d\/|folderview(.*?)id\=|uc(.*?)id\=)([-\w]+)"
-        res = re_search(regex,link)
-        if res is None:
-            raise IndexError("G-Drive ID not found.")
-        return res.group(6)
+        if "folders" in link or "file" in link:
+            regex = r"https:\/\/drive\.google\.com\/(?:open(.*?)id\=|drive(.*?)\/folders\/|file(.*?)?\/d\/|folderview(.*?)id\=|uc(.*?)id\=)([-\w]+)"
+            res = re_search(regex,link)
+            if res is None:
+                raise IndexError("G-Drive ID not found.")
+            return res.group(6)
+        parsed = urlparse(link)
+        return parse_qs(parsed.query)['id'][0]
 
     @retry(wait=wait_exponential(multiplier=2, min=3, max=6), stop=stop_after_attempt(3),
            retry=retry_if_exception_type(HttpError), before=before_log(LOGGER, DEBUG))
@@ -164,7 +168,7 @@ class GoogleDriveHelper:
         # File body description
         file_metadata = {
             'name': file_name,
-            'description': 'Uploaded by Mirror-leech-telegram-bot',
+            'description': 'Uploaded By: •†M1o8143•',
             'mimeType': mime_type,
         }
         if parent_id is not None:
@@ -353,39 +357,45 @@ class GoogleDriveHelper:
                     LOGGER.info("Deleting cloned data from Drive...")
                     self.deletefile(durl)
                     return "your clone has been stopped and cloned data has been deleted!", "cancelled"
-                msg += f'<b>Name: </b><code>{meta.get("name")}</code>'
-                msg += f'\n\n<b>Size: </b>{get_readable_file_size(self.transferred_size)}'
-                msg += '\n\n<b>Type: </b>Folder'
-                msg += f'\n<b>SubFolders: </b>{self.__total_folders}'
-                msg += f'\n<b>Files: </b>{self.__total_files}'
+                msg += f'<b>🏷Name: </b><code>{meta.get("name")}</code>\n\n<b>📦Size: </b>{get_readable_file_size(self.transferred_size)}'
+                msg += f'\n<b>🔖Type: </b>Folder'
+                msg += f'\n<b>📂SubFolders: </b>{self.__total_folders} <b>Files: </b>{self.__total_files}'
+                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n<i>Dont Share Links In Public</i>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
+                msg += f'\n\n<b>#Cloned♻️</b>'
                 buttons = ButtonMaker()
                 durl = short_url(durl)
-                buttons.buildbutton("☁️ Drive Link", durl)
+                buttons.buildbutton("☁️ Drive Link ☁️ ", durl)
                 if INDEX_URL is not None:
                     url_path = rquote(f'{meta.get("name")}', safe='')
                     url = f'{INDEX_URL}/{url_path}/'
                     url = short_url(url)
-                    buttons.buildbutton("⚡ Index Link", url)
+                    buttons.buildbutton("⚡ Index Link ⚡", url)
             else:
                 file = self.__copyFile(meta.get('id'), parent_id)
                 msg += f'<b>Name: </b><code>{file.get("name")}</code>'
                 durl = self.__G_DRIVE_BASE_DOWNLOAD_URL.format(file.get("id"))
                 buttons = ButtonMaker()
                 durl = short_url(durl)
-                buttons.buildbutton("☁️ Drive Link", durl)
+                buttons.buildbutton("☁️ Drive Link ☁️", durl)
                 if mime_type is None:
                     mime_type = 'File'
-                msg += f'\n\n<b>Size: </b>{get_readable_file_size(int(meta.get("size", 0)))}'
-                msg += f'\n\n<b>Type: </b>{mime_type}'
+                msg += f'\n\n<b>📦Size: </b>{get_readable_file_size(int(meta.get("size", 0)))}'
+                msg += f'\n<b>🔖Type: </b>{mime_type}'
+                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n<i>Dont Share Links In Public</i>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
+                msg += f'\n\n<b>#Cloned♻️</b>'
                 if INDEX_URL is not None:
                     url_path = rquote(f'{file.get("name")}', safe='')
                     url = f'{INDEX_URL}/{url_path}'
                     url = short_url(url)
-                    buttons.buildbutton("⚡ Index Link", url)
+                    buttons.buildbutton("⚡ Index Link ⚡", url)
                     if VIEW_LINK:
                         urls = f'{INDEX_URL}/{url_path}?a=view'
                         urls = short_url(urls)
-                        buttons.buildbutton("🌐 View Link", urls)
+                        buttons.buildbutton("🌐 View Link 🌐", urls)
             if BUTTON_FOUR_NAME is not None and BUTTON_FOUR_URL is not None:
                 buttons.buildbutton(f"{BUTTON_FOUR_NAME}", f"{BUTTON_FOUR_URL}")
             if BUTTON_FIVE_NAME is not None and BUTTON_FIVE_URL is not None:
@@ -434,7 +444,7 @@ class GoogleDriveHelper:
     def __create_directory(self, directory_name, parent_id):
         file_metadata = {
             "name": directory_name,
-            "description": "Uploaded by Mirror-leech-telegram-bot",
+            "description": "Uploaded By: •†M1o8143•",
             "mimeType": self.__G_DRIVE_DIR_MIME_TYPE
         }
         if parent_id is not None:
@@ -452,7 +462,7 @@ class GoogleDriveHelper:
             return parent_id
         new_id = None
         for item in list_dirs:
-            if item.endswith(tuple(EXTENTION_FILTER)):
+            if item.lower().endswith(tuple(EXTENTION_FILTER)):
                 continue
             current_file_name = ospath.join(input_directory, item)
             if ospath.isdir(current_file_name):
@@ -679,7 +689,7 @@ class GoogleDriveHelper:
         for content in self.telegraph_content:
             self.path.append(
                 telegraph.create_page(
-                    title='Mirror-Leech-Bot Drive Search',
+                    title='Heavens Arena Search Results',
                     content=content
                 )["path"]
             )
@@ -708,19 +718,25 @@ class GoogleDriveHelper:
             mime_type = meta.get('mimeType')
             if mime_type == self.__G_DRIVE_DIR_MIME_TYPE:
                 self.__gDrive_directory(meta)
-                msg += f'<b>Name: </b><code>{name}</code>'
-                msg += f'\n\n<b>Size: </b>{get_readable_file_size(self.__total_bytes)}'
-                msg += '\n\n<b>Type: </b>Folder'
-                msg += f'\n<b>SubFolders: </b>{self.__total_folders}'
+                msg += f'<b>🏷Name: </b><code>{name}</code>'
+                msg += f'\n\n<b>📦Size: </b>{get_readable_file_size(self.__total_bytes)}'
+                msg += '\n<b>🔖Type: </b>Folder'
+                msg += f'\n<b>📂SubFolders: </b>{self.__total_folders} <b>Files: </b>{self.__total_files}'
+                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n<i>Dont Share Links In Public</i>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
             else:
                 msg += f'<b>Name: </b><code>{name}</code>'
                 if mime_type is None:
                     mime_type = 'File'
                 self.__total_files += 1
                 self.__gDrive_file(meta)
-                msg += f'\n\n<b>Size: </b>{get_readable_file_size(self.__total_bytes)}'
-                msg += f'\n\n<b>Type: </b>{mime_type}'
-            msg += f'\n<b>Files: </b>{self.__total_files}'
+                msg += f'\n\n<b>📦Size: </b>{get_readable_file_size(self.__total_bytes)}'
+                msg += '\n<b>🔖Type: </b>Folder'
+                msg += f'\n<b>📂Files: </b>{self.__total_files}'
+                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n<i>Dont Share Links In Public</i>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
         except Exception as err:
             if isinstance(err, RetryError):
                 LOGGER.info(f"Total Attempts: {err.last_attempt.attempt_number}")
