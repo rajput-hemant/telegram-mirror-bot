@@ -2,7 +2,6 @@ from logging import getLogger, ERROR
 from os import remove as osremove, walk, path as ospath, rename as osrename
 from time import time, sleep
 from pyrogram.errors import FloodWait, RPCError
-from pyrogram import enums
 from PIL import Image
 from threading import RLock
 
@@ -158,7 +157,6 @@ class TgUploader:
                         video=up_path,
                         quote=True,
                         caption=cap_mono,
-                        parse_mode=enums.ParseMode.HTML,
                         duration=duration,
                         width=width,
                         height=height,
@@ -183,14 +181,12 @@ class TgUploader:
                                 )
                         except Exception as err:
                             LOGGER.error(f"Failed sent to channel\n{err}")
-
                 elif file_.upper().endswith(AUDIO_SUFFIXES):
                     duration, artist, title = get_media_info(up_path)
                     self.__sent_msg = self.__sent_msg.reply_audio(
                         audio=up_path,
                         quote=True,
                         caption=cap_mono,
-                        parse_mode=enums.ParseMode.HTML,
                         duration=duration,
                         performer=artist,
                         title=title,
@@ -212,7 +208,6 @@ class TgUploader:
                         photo=up_path,
                         quote=True,
                         caption=cap_mono,
-                        parse_mode=enums.ParseMode.HTML,
                         disable_notification=True,
                         progress=self.__upload_progress,
                     )
@@ -242,7 +237,6 @@ class TgUploader:
                     quote=True,
                     thumb=thumb,
                     caption=cap_mono,
-                    parse_mode=enums.ParseMode.HTML,
                     disable_notification=True,
                     progress=self.__upload_progress,
                 )
