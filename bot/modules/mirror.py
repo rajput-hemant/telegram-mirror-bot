@@ -282,7 +282,7 @@ class MirrorListener:
                     self.clean()
                 else:
                     update_all_messages()
-            sendDump(DUMP_CHAT_ID, msg, self.bot, self.mes,
+            sendDump(DUMP_CHAT_ID, msg, self.bot, self.message,
                      InlineKeyboardMarkup(buttons.build_menu(2)))
 
     def onUploadError(self, error):
