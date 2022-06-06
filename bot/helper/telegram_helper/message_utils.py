@@ -8,6 +8,17 @@ from bot import AUTO_DELETE_MESSAGE_DURATION, LOGGER, status_reply_dict, status_
                 Interval, DOWNLOAD_STATUS_UPDATE_INTERVAL, RSS_CHAT_ID, bot, rss_session
 from bot.helper.ext_utils.bot_utils import get_readable_message, setInterval
 
+def sendDump(chat_id: str, text: str, bot, update: Message, reply_markup: InlineKeyboardMarkup):
+    try:
+        return bot.send_message(
+            chat_id=chat_id,
+            disable_web_page_preview=True,
+            text=text,
+            reply_markup=reply_markup,
+            parse_mode="HTML",
+        )
+    except Exception as e:
+        LOGGER.error(str(e))
 
 def sendMessage(text: str, bot, message: Message):
     try:
