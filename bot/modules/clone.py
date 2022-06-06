@@ -45,8 +45,10 @@ def _clone(message, bot, multi=0):
             deleteMessage(bot, msg)
             return sendMessage(str(e), bot, message)
     if is_gdrive_link(link):
+        msg = sendMessage(f"Processing: <code>{link}</code>", bot, message)
         gd = GoogleDriveHelper()
         res, size, name, files = gd.helper(link)
+        deleteMessage(bot, msg)
         if res != "":
             return sendMessage(res, bot, message)
         if STOP_DUPLICATE:

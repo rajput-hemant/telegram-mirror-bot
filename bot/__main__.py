@@ -7,7 +7,7 @@ from sys import executable
 from telegram import InlineKeyboardMarkup
 from telegram.ext import CommandHandler
 
-from bot import bot, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, LOGGER, Interval, INCOMPLETE_TASK_NOTIFIER, DB_URI, alive, app, main_loop
+from bot import bot, dispatcher, updater, botStartTime, IGNORE_PENDING_REQUESTS, LOGGER, Interval, INCOMPLETE_TASK_NOTIFIER, DB_URI, app, main_loop, IMAGE_URL
 from .helper.ext_utils.fs_utils import start_cleanup, clean_all, exit_clean_up
 from .helper.ext_utils.telegraph_helper import telegraph
 from .helper.ext_utils.bot_utils import get_readable_file_size, get_readable_time
@@ -44,29 +44,29 @@ def stats(update, context):
     mem_t = get_readable_file_size(memory.total)
     mem_a = get_readable_file_size(memory.available)
     mem_u = get_readable_file_size(memory.used)
-    stats = f'<b>Commit Date:</b> {last_commit}\n\n'\
-            f'<b>Bot Uptime:</b> {currentTime}\n'\
-            f'<b>OS Uptime:</b> {osUptime}\n\n'\
-            f'<b>Total Disk Space:</b> {total}\n'\
-            f'<b>Used:</b> {used} | <b>Free:</b> {free}\n\n'\
-            f'<b>Upload:</b> {sent}\n'\
-            f'<b>Download:</b> {recv}\n\n'\
-            f'<b>CPU:</b> {cpuUsage}%\n'\
-            f'<b>RAM:</b> {mem_p}%\n'\
-            f'<b>DISK:</b> {disk}%\n\n'\
-            f'<b>Physical Cores:</b> {p_core}\n'\
-            f'<b>Total Cores:</b> {t_core}\n\n'\
-            f'<b>SWAP:</b> {swap_t} | <b>Used:</b> {swap_p}%\n'\
-            f'<b>Memory Total:</b> {mem_t}\n'\
-            f'<b>Memory Free:</b> {mem_a}\n'\
-            f'<b>Memory Used:</b> {mem_u}\n'
-    sendMessage(stats, context.bot, update.message)
+    stats = f'<b>╭─「⭕️ BOT STATISTICS ⭕️」</b>\n' \
+            f'<b>│</b>\n' \
+            f'<b>├ ⏰ Bot Uptime : {currentTime}</b>\n' \
+            f'<b>├ 💾 Total Space : {total}</b>\n' \
+            f'<b>├ 📀 Used Space : {used}</b>\n' \
+            f'<b>├ 📀 Free Space : {free}</b>\n' \
+            f'<b>├ 💽 DISK : {disk}%</b>\n' \
+            f'<b>├ 🔼 Total Upload : {sent}</b>\n' \
+            f'<b>├ 🔽 Total Download : {recv}</b>\n' \
+            f'<b>├ 🖥️ CPU : {cpuUsage}%</b>\n' \
+            f'<b>├ 💿 RAM : {mem_p}%</b>\n' \
+            f'<b>├ 💿 Memory Total:</b> {mem_t}\n' \
+            f'<b>├ 💿 Memory Free:</b> {mem_a}\n' \
+            f'<b>├ 💿 Memory Used:</b> {mem_u}\n' \
+            f'<b>│</b>\n' \
+            f'<b>╰─「 🚸 ·†M1o8143· 🚸 」</b>'
+    update.effective_message.reply_photo(IMAGE_URL, stats, parse_mode='HTML')
 
 
 def start(update, context):
     buttons = ButtonMaker()
-    buttons.buildbutton("Repo", "https://www.github.com/anasty17/mirror-leech-telegram-bot")
-    buttons.buildbutton("Report Group", "https://t.me/+PRRzqHd31XY3ZWZk")
+    buttons.buildbutton("☁️ Heavens Arena ☁️", "https://t.me/heavens_arena")
+    buttons.buildbutton("Discussion Group", "https://t.me/+EGGrGAZ5A5AzODM1")
     reply_markup = InlineKeyboardMarkup(buttons.build_menu(2))
     if CustomFilters.authorized_user(update) or CustomFilters.authorized_chat(update):
         start_string = f'''
@@ -75,7 +75,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 '''
         sendMarkup(start_string, context.bot, update.message, reply_markup)
     else:
-        sendMarkup('Not Authorized user, deploy your own mirror-leech bot', context.bot, update.message, reply_markup)
+        sendMarkup('Not a Authorized user.', context.bot, update.message, reply_markup)
 
 def restart(update, context):
     restart_message = sendMessage("Restarting...", context.bot, update.message)
@@ -167,34 +167,38 @@ help_string_telegraph = f'''<br>
 <b>/{BotCommands.StatusCommand}</b>: Shows a status of all the downloads
 <br><br>
 <b>/{BotCommands.StatsCommand}</b>: Show Stats of the machine the bot is hosted on
+<br><br>
+-----ADMIN ONLY-----
+<br><br>
+<b>/{BotCommands.AuthorizeCommand}</b>: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+<br><br>
+<b>/{BotCommands.UnAuthorizeCommand}</b>: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
+<br><br>
+<b>/{BotCommands.AuthorizedUsersCommand}</b>: Show authorized users (Only Owner & Sudo)
+<br><br>
+<b>/{BotCommands.AddSudoCommand}</b>: Add sudo user (Only Owner)
+<br><br>
+<b>/{BotCommands.RmSudoCommand}</b>: Remove sudo users (Only Owner)
+<br><br>
+<b>/{BotCommands.RestartCommand}</b>: Restart and update the bot
+<br><br>
+<b>/{BotCommands.LogCommand}</b>: Get a log file of the bot. Handy for getting crash reports
+<br><br>
+<b>/{BotCommands.ShellCommand}</b>: Run commands in Shell (Only Owner)
+<br><br>
+<b>/{BotCommands.ExecHelpCommand}</b>: Get help for Executor module (Only Owner)
 '''
 
 help = telegraph.create_page(
-        title='Mirror-Leech-Bot Help',
+        title='Heavens Arena Mirror Group',
         content=help_string_telegraph,
     )["path"]
 
-help_string = f'''
-/{BotCommands.PingCommand}: Check how long it takes to Ping the Bot
-
-/{BotCommands.AuthorizeCommand}: Authorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.UnAuthorizeCommand}: Unauthorize a chat or a user to use the bot (Can only be invoked by Owner & Sudo of the bot)
-
-/{BotCommands.AuthorizedUsersCommand}: Show authorized users (Only Owner & Sudo)
-
-/{BotCommands.AddSudoCommand}: Add sudo user (Only Owner)
-
-/{BotCommands.RmSudoCommand}: Remove sudo users (Only Owner)
-
-/{BotCommands.RestartCommand}: Restart and update the bot
-
-/{BotCommands.LogCommand}: Get a log file of the bot. Handy for getting crash reports
-'''
+help_string = f'''<b><i>How to use Bot👇🏻</i></b>'''
 
 def bot_help(update, context):
     button = ButtonMaker()
-    button.buildbutton("Other Commands", f"https://telegra.ph/{help}")
+    button.buildbutton("Click Me 😉", f"https://telegra.ph/{help}")
     reply_markup = InlineKeyboardMarkup(button.build_menu(1))
     sendMarkup(help_string, context.bot, update.message, reply_markup)
 
@@ -209,7 +213,7 @@ def main():
                         chat_id, msg_id = map(int, f)
                     msg = 'Restarted successfully!'
                 else:
-                    msg = 'Bot Restarted!'
+                    msg = '<b>⚠️Bot Rebooted!</b>\n\n<i>All Downloads were stopped. Send your mirrors again.</i>'
                 for tag, links in data.items():
                      msg += f"\n\n{tag}: "
                      for index, link in enumerate(links, start=1):
