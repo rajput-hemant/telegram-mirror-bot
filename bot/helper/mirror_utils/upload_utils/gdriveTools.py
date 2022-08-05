@@ -358,7 +358,7 @@ class GoogleDriveHelper:
                 msg += f'\n<b>📂SubFolders: </b>{self.__total_folders} <b>Files: </b>{self.__total_files}'
                 msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
-                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
                 msg += f'\n\n<b>#Cloned♻️</b>'
                 buttons = ButtonMaker()
                 durl = short_url(durl)
@@ -381,7 +381,7 @@ class GoogleDriveHelper:
                 msg += f'\n<b>🔖Type: </b>{mime_type}'
                 msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
-                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
                 msg += f'\n\n<b>#Cloned♻️</b>'
                 if INDEX_URL is not None:
                     url_path = rquote(f'{file.get("name")}', safe='')
@@ -719,7 +719,7 @@ class GoogleDriveHelper:
                 msg += f'\n<b>📂SubFolders: </b>{self.__total_folders} <b>Files: </b>{self.__total_files}'
                 msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
-                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
             else:
                 msg += f'<b>Name: </b><code>{name}</code>'
                 if mime_type is None:
@@ -730,7 +730,7 @@ class GoogleDriveHelper:
                 msg += f'\n<b>📂Files: </b>{self.__total_files}'
                 msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
-                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena">•†M1o8143•</a></b>'
+                msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
         except Exception as err:
             if isinstance(err, RetryError):
                 LOGGER.info(f"Total Attempts: {err.last_attempt.attempt_number}")
