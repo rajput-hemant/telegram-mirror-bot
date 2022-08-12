@@ -356,11 +356,12 @@ class GoogleDriveHelper:
                 msg += f'<b>🏷Name: </b><code>{meta.get("name")}</code>\n\n<b>📦Size: </b>{get_readable_file_size(self.transferred_size)}'
                 msg += f'\n<b>🔖Type: </b>Folder'
                 msg += f'\n<b>📂SubFolders: </b>{self.__total_folders} <b>Files: </b>{self.__total_files}'
-                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n\n<i>Edu TeamDrive is Private.</i>'
+                msg += f'\n<i>Use Index Links Only.</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
                 msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
                 msg += f'\n\n<b>#Cloned♻️</b>'
-                buttons = ButtonMaker()
+                buttons = ButtonMaker() 
                 durl = short_url(durl)
                 buttons.buildbutton("☁️ Drive Link ☁️", durl)
                 if INDEX_URL is not None:
@@ -379,7 +380,8 @@ class GoogleDriveHelper:
                     mime_type = 'File'
                 msg += f'\n\n<b>📦Size: </b>{get_readable_file_size(int(meta.get("size", 0)))}'
                 msg += f'\n<b>🔖Type: </b>{mime_type}'
-                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n\n<i>Edu TeamDrive is Private.</i>'
+                msg += f'\n<i>Use Index Links Only.</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
                 msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
                 msg += f'\n\n<b>#Cloned♻️</b>'
@@ -717,7 +719,8 @@ class GoogleDriveHelper:
                 msg += f'\n\n<b>📦Size: </b>{get_readable_file_size(self.__total_bytes)}'
                 msg += '\n<b>🔖Type: </b>Folder'
                 msg += f'\n<b>📂SubFolders: </b>{self.__total_folders} <b>Files: </b>{self.__total_files}'
-                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n\n<i>Edu TeamDrive is Private.</i>'
+                msg += f'\n<i>Use Index Links Only.</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
                 msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
             else:
@@ -728,7 +731,8 @@ class GoogleDriveHelper:
                 self.__gDrive_file(meta)
                 msg += '\n<b>🔖Type: </b>Folder'
                 msg += f'\n<b>📂Files: </b>{self.__total_files}'
-                msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+                msg += f'\n\n<i>Edu TeamDrive is Private.</i>'
+                msg += f'\n<i>Use Index Links Only.</i>'
                 msg += f'\n<i>Dont Share Links In Public</i>'
                 msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
         except Exception as err:

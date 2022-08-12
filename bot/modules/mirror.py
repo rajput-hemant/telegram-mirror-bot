@@ -217,7 +217,8 @@ class MirrorListener:
             msg += f'\n\n<b>🔖Type: </b>{typ}'
             if ospath.isdir(f'{DOWNLOAD_DIR}{self.uid}/{name}'):
                 msg += f'\n<b>📂SubFolders: </b>{folders} <b>Files: </b>{files}'
-            msg += f'\n\n<i>Join TeamDrive to access the GDrive link!</i>'
+            msg += f'\n\n<i>Edu TeamDrive is Private.</i>'
+            msg += f'\n<i>Use Index Links Only.</i>'
             msg += f'\n<i>Dont Share Links In Public</i>'
             msg += f'\n\n<b>Powered By: <a href="https://t.me/heavens_arena_2">•†M1o8143•</a></b>'
             msg += f'\n\n<b>#Uploads☁️</b>'
